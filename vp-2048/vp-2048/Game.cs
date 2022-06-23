@@ -15,7 +15,7 @@ namespace vp_2048
         private bool isLost { get; set; }
         private int Score { get; set; }
 
-        private int generateRandomNumber(int scale) // scale from 1 to ....
+        private int generateRandomNumber(int scale) // scale from 1 to ...
         {
             Random randomGenerator = new Random();
 
