@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -115,16 +115,17 @@ namespace vp_2048
             }
             return row;
         }
-        public void printBoard()
+        private void rotateTable()
         {
-            for (int i = 0; i < 4; i++)
+            int[,] tempBoard = new int[this.BoardSize,this.BoardSize];
+            for (int i = 0; i < this.BoardSize; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < this.BoardSize; j++)
                 {
-                    Console.Write(this.Board[i,j]);
+                    tempBoard[i,j] = this.Board[this.BoardSize-1-j,i];
                 }
-                Console.WriteLine();
             }
+            this.Board = tempBoard;
         }
         public int [,] getTable()
         {
@@ -132,6 +133,22 @@ namespace vp_2048
         }
         public void handleMove(string direction) // right, left, bottom, top
         {
+            if(direction == "top")
+            {
+                this.rotateTable();
+            }
+            if(direction == "left")
+            {
+                this.rotateTable();
+                this.rotateTable();
+            }
+            if(direction=="bottom")
+            {
+                this.rotateTable();
+                this.rotateTable();
+                this.rotateTable();
+            }
+    
             for (int i = 0; i < this.BoardSize; i++)
             {
                 int[] temp = new int[this.BoardSize];
@@ -146,6 +163,22 @@ namespace vp_2048
                 }
             }
 
+            if (direction == "bottom")
+            {
+                this.rotateTable();
+            }
+            if (direction == "left")
+            {
+                this.rotateTable();
+                this.rotateTable();
+            }
+            if (direction == "top")
+            {
+                this.rotateTable();
+                this.rotateTable();
+                this.rotateTable();
+            }
+            //TODO: check if lost, add new random block every move, then check if won
         }
     }
 }

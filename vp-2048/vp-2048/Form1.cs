@@ -22,11 +22,11 @@ namespace vp_2048
         {
             game = new Game();
             int[,] arr = new int[4, 4];
-            arr= game.getTable();
+            arr = game.getTable();
             string arrTSr = "";
-            for(int i=0;i<4;i++)
+            for (int i = 0; i < 4; i++)
             {
-                for(int j=0;j<4;j++)
+                for (int j = 0; j < 4; j++)
                 {
                     arrTSr += arr[i, j].ToString() + " ";
                 }
@@ -34,10 +34,8 @@ namespace vp_2048
             }
             label1.Text = arrTSr;
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void updateTable()
         {
-            game.handleMove("right");
             int[,] arr = new int[4, 4];
             arr = game.getTable();
             string arrTSr = "";
@@ -51,6 +49,29 @@ namespace vp_2048
             }
             label1.Text = arrTSr;
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            game.handleMove("right");
+            this.updateTable();
+
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            game.handleMove("top");
+            this.updateTable();
+        }
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            game.handleMove("left");
+            this.updateTable();
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            game.handleMove("bottom");
+            this.updateTable();
         }
     }
 }
