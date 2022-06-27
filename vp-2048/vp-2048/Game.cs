@@ -163,31 +163,32 @@ namespace vp_2048
         }
         private bool isValid(int x, int y)
         {
-            if (x >= 0 && x < this.BoardSize && y >= 0 && y <= this.BoardSize)
+            if (x >= 0 && x < this.BoardSize && y >= 0 && y < this.BoardSize)
                 return true;
 
             return false;
         }
         private bool sameNeighbor(int x, int y)
         {
+            bool result = false;
             if (isValid(x - 1, y))
             {
-                return this.Board[x - 1,y] == this.Board[x,y];
+                result = result || this.Board[x - 1,y] == this.Board[x,y];
             }
             if (isValid(x + 1, y))
             {
-                return this.Board[x + 1, y] == this.Board[x, y];
+                result = result || this.Board[x + 1, y] == this.Board[x, y];
             }
             if (isValid(x, y - 1))
             {
-                return this.Board[x, y - 1] == this.Board[x, y];
+                result = result || this.Board[x, y - 1] == this.Board[x, y];
             }
             if (isValid(x, y + 1))
             {
-                return this.Board[x, y + 1] == this.Board[x, y];
+                result = result || this.Board[x, y + 1] == this.Board[x, y];
             }
 
-            return true;
+            return result;
         }
         private void checkLost()
         {
