@@ -132,6 +132,10 @@ namespace vp_2048
         {
             return this.Board;
         }
+        public int getTileValue(int x, int y)
+        {
+            return this.Board[x, y];
+        }
         public string getScore()
         {
             return this.Score.ToString();

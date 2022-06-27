@@ -40,7 +40,7 @@ namespace vp_2048
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(74, 62);
+            this.label1.Location = new System.Drawing.Point(604, 202);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 15);
             this.label1.TabIndex = 0;
