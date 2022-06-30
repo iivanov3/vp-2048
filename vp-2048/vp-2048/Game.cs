@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +11,8 @@ namespace vp_2048
     {
         private int[,] Board { get; set; }
         private int BoardSize { get; set; }
-        private bool isWon { get; set; }
-        private bool isLost { get; set; }
+        public bool isWon { get; private set; }
+        public bool isLost { get;private set; }
         private int Score { get; set; }
 
         private int generateRandomNumber(int scale) // scale from 1 to ...
@@ -107,6 +107,7 @@ namespace vp_2048
                     if (row[j] != row[i])
                     {
                         row[i - 1] = row[j];
+                        if(i-1 != j)
                         row[j] = 0;
                         break;
                     }
@@ -115,23 +116,126 @@ namespace vp_2048
             }
             return row;
         }
-        public void printBoard()
+        private void rotateTable()
         {
-            for (int i = 0; i < 4; i++)
+            int[,] tempBoard = new int[this.BoardSize,this.BoardSize];
+            for (int i = 0; i < this.BoardSize; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < this.BoardSize; j++)
                 {
-                    Console.Write(this.Board[i,j]);
+                    tempBoard[i,j] = this.Board[this.BoardSize-1-j,i];
                 }
-                Console.WriteLine();
             }
+            this.Board = tempBoard;
         }
         public int [,] getTable()
         {
             return this.Board;
         }
+        public int getTileValue(int x, int y)
+        {
+            return this.Board[x, y];
+        }
+        public string getScore()
+        {
+            return this.Score.ToString();
+        }
+        private void addRandomTile()
+        {
+            int tileValue = generateRandomNumber(100) > 80 ? 4 : 2;
+            int ranCoordsX, ranCoordsY;
+            ranCoordsX = generateRandomNumber(this.BoardSize);
+            ranCoordsY = generateRandomNumber(this.BoardSize);
+            while(this.Board[ranCoordsX,ranCoordsY] != 0)
+            {
+                ranCoordsX = generateRandomNumber(this.BoardSize);
+                ranCoordsY = generateRandomNumber(this.BoardSize);
+            }
+
+            this.Board[ranCoordsX, ranCoordsY] = tileValue;
+        }
+        private void checkWon()
+        {
+            for(int i=0;i<this.BoardSize;i++)
+            {
+                for(int j=0;j<this.BoardSize;j++)
+                {
+                    if (this.Board[i, j] == 2048)
+                        this.isWon = true;
+                }
+            }
+        }
+        private bool isValid(int x, int y)
+        {
+            if (x >= 0 && x < this.BoardSize && y >= 0 && y < this.BoardSize)
+                return true;
+
+            return false;
+        }
+        private bool sameNeighbor(int x, int y)
+        {
+            bool result = false;
+            if (isValid(x - 1, y))
+            {
+                result = result || this.Board[x - 1,y] == this.Board[x,y];
+            }
+            if (isValid(x + 1, y))
+            {
+                result = result || this.Board[x + 1, y] == this.Board[x, y];
+            }
+            if (isValid(x, y - 1))
+            {
+                result = result || this.Board[x, y - 1] == this.Board[x, y];
+            }
+            if (isValid(x, y + 1))
+            {
+                result = result || this.Board[x, y + 1] == this.Board[x, y];
+            }
+
+            return result;
+        }
+        private void checkLost()
+        {
+            int count = 0;
+            for (int i = 0; i < this.BoardSize; i++)
+            {
+                for (int j = 0; j < this.BoardSize; j++)
+                {
+                    if (this.Board[i, j] != 0)
+                        count += 1;
+                }
+            }
+            if(count == this.BoardSize*this.BoardSize)
+            {
+                this.isLost = true;
+                for (int i = 0; i < this.BoardSize; i++)
+                {
+                    for (int j = 0; j < this.BoardSize; j++)
+                    {
+                        if (sameNeighbor(i, j) == true)
+                            this.isLost = false;
+                    }
+                }
+            }
+        }
         public void handleMove(string direction) // right, left, bottom, top
         {
+            if(direction == "top")
+            {
+                this.rotateTable();
+            }
+            if(direction == "left")
+            {
+                this.rotateTable();
+                this.rotateTable();
+            }
+            if(direction=="bottom")
+            {
+                this.rotateTable();
+                this.rotateTable();
+                this.rotateTable();
+            }
+            bool isValidMove = false;
             for (int i = 0; i < this.BoardSize; i++)
             {
                 int[] temp = new int[this.BoardSize];
@@ -142,10 +246,33 @@ namespace vp_2048
                 temp = shiftRight(temp);
                 for (int j = 0; j < this.BoardSize; j++)
                 {
+                    if (this.Board[i, j] != temp[j]) isValidMove = true;
                     this.Board[i, j] = temp[j];
                 }
             }
 
+            if (direction == "bottom")
+            {
+                this.rotateTable();
+            }
+            if (direction == "left")
+            {
+                this.rotateTable();
+                this.rotateTable();
+            }
+            if (direction == "top")
+            {
+                this.rotateTable();
+                this.rotateTable();
+                this.rotateTable();
+            }
+            //TODO: check if lost, add new random block every move, then check if won
+            if (isValidMove)
+            {
+                this.addRandomTile();
+                this.checkWon();
+                this.checkLost();
+            }
         }
     }
 }
