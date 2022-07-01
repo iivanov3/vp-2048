@@ -34,3 +34,4 @@ C:\Users\Ivan\Desktop\vp-2048\vp-2048\vp-2048\obj\Debug\net5.0-windows\refint\vp
 C:\Users\Ivan\Desktop\vp-2048\vp-2048\vp-2048\obj\Debug\net5.0-windows\vp-2048.pdb
 C:\Users\Ivan\Desktop\vp-2048\vp-2048\vp-2048\obj\Debug\net5.0-windows\vp-2048.genruntimeconfig.cache
 C:\Users\Ivan\Desktop\vp-2048\vp-2048\vp-2048\obj\Debug\net5.0-windows\ref\vp-2048.dll
+C:\Users\Ivan\Desktop\vp-2048\vp-2048\vp-2048\obj\Debug\net5.0-windows\vp_2048.Rules.resources

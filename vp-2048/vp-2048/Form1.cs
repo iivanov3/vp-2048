@@ -15,17 +15,19 @@ namespace vp_2048
         private Game game;
         private Font drawFont = new Font("Arial", 25);
         private Graphics formGraphics;
-     
+        private Rules rules;
+
         public Form1()
         {
             InitializeComponent();
             DoubleBuffered = true;
+            rules = new Rules();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             game = new Game();
-            this.updateTable();
+            label2.Font = new Font("Segoe UI", 14, FontStyle.Bold);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -58,59 +60,17 @@ namespace vp_2048
             
             if (changed)
             {
-                this.updateTable();
                 if (this.game.isWon)
                 {
-                    MessageBox.Show("Won");
+                    MessageBox.Show(String.Format("You win.\nYour score is {0}.", game.getScore()), "Game over");
                 }
                 else if (this.game.isLost)
                 {
-                    MessageBox.Show("Lost");
+                    MessageBox.Show("You lose.", "Game over");
                 }
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-        
-        private void updateTable()
-        {
-            int[,] arr = new int[4, 4];
-            arr = game.getTable();
-            
-            string arrTSr = "";
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    arrTSr += arr[i, j].ToString() + " ";
-                }
-                arrTSr += "\n";
-            }
-
-            label1.Text = arrTSr;
-            label2.Text = "Score: " + this.game.getScore();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            game.handleMove("right");
-            this.updateTable();
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            game.handleMove("top");
-            this.updateTable();
-        }
-        private void button3_Click_1(object sender, EventArgs e)
-        {
-            game.handleMove("left");
-            this.updateTable();
-        }
-
-        private void button4_Click_1(object sender, EventArgs e)
-        {
-            game.handleMove("bottom");
-            this.updateTable();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -138,10 +98,29 @@ namespace vp_2048
                 }
             }
 
+            label2.Text = "Score: " + game.getScore();
+
             myBrush.Dispose();
             formGraphics.Dispose();
             solidBrush.Dispose();
             drawBrush.Dispose();
         }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            game = new Game();
+            Invalidate();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            rules.Show();
+        }
+
+        private void label2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
     }
 }

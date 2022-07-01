@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//DONE: moving to right works as it should(bugless).
-//TODO: Transpose the board function so that shiftRight can be reused for other directions
+
 namespace vp_2048
 {
     class Game
     {
-        private int[,] Board { get; set; }
-        private int BoardSize { get; set; }
+        public int[,] Board { get; set; }
+        public int BoardSize { get; set; }
         public bool isWon { get; private set; }
         public bool isLost { get;private set; }
-        private int Score { get; set; }
+        public int Score { get; set; }
+        public static Random RandomGenerator = new Random();
 
-        private int generateRandomNumber(int scale) // scale from 1 to ...
+        private int generateRandomNumber(int scale)
         {
-            Random randomGenerator = new Random();
-
-            return randomGenerator.Next(0,scale);
+            return RandomGenerator.Next(0, scale);
         }
 
-        public Game() // Definiraj pochetna sostojba na igrata
+        public Game()
         {
             this.Score = 0;
-            this.BoardSize = 4; // Let me be Lejzi
+            this.BoardSize = 4; 
             this.isWon = false;
             this.isLost = false;
             this.Board = new int[4,4];
@@ -33,7 +31,7 @@ namespace vp_2048
             {
                 for(int j=0; j < this.BoardSize;j++)
                 {
-                    this.Board[i,j] = 0; // Init board;
+                    this.Board[i,j] = 0;
                 }
             }
 
@@ -76,8 +74,6 @@ namespace vp_2048
 
             this.Board[randomCoordsX1,randomCoordsY1] = firstBlockValue;
             this.Board[randomCoordsX2,randomCoordsY2] = secondBlockValue;
-           
-            
         }
         private int[] shiftRight(int[] row) // zemi 1 red i podmesti mu gi decata udesno
         {
@@ -205,7 +201,7 @@ namespace vp_2048
                         count += 1;
                 }
             }
-            if(count == this.BoardSize*this.BoardSize)
+            if (count == this.BoardSize*this.BoardSize)
             {
                 this.isLost = true;
                 for (int i = 0; i < this.BoardSize; i++)
