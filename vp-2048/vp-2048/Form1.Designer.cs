@@ -36,7 +36,7 @@ namespace vp_2048
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(510, 73);
+            this.button2.Location = new System.Drawing.Point(480, 58);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(154, 29);
             this.button2.TabIndex = 6;
@@ -46,7 +46,7 @@ namespace vp_2048
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(510, 120);
+            this.button1.Location = new System.Drawing.Point(480, 105);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(154, 29);
             this.button1.TabIndex = 7;
@@ -57,25 +57,24 @@ namespace vp_2048
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(508, 28);
+            this.label2.Location = new System.Drawing.Point(480, 9);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 20);
             this.label2.TabIndex = 5;
             this.label2.Text = "label2";
-            this.label2.Paint += new System.Windows.Forms.PaintEventHandler(this.label2_Paint);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 468);
+            this.ClientSize = new System.Drawing.Size(661, 484);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.ResumeLayout(false);
             this.PerformLayout();

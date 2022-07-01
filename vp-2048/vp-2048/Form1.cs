@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace vp_2048
@@ -13,61 +8,59 @@ namespace vp_2048
     public partial class Form1 : Form
     {
         private Game game;
-        private Font drawFont = new Font("Arial", 25);
         private Graphics formGraphics;
-        private Rules rules;
+        private readonly Rules rules;
+        private readonly Font drawFont;
         private readonly Dictionary<int, Color> tileColors;
         private readonly Dictionary<Keys, string> validKeys;
 
         public Form1()
         {
             InitializeComponent();
+            Text = "2048";
             DoubleBuffered = true;
             rules = new Rules();
             label2.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+            drawFont = new Font("Arial", 25);
 
-            tileColors = new Dictionary<int, Color>();
-            tileColors[0] = Color.FromArgb(204, 192, 179);
-            tileColors[2] = Color.FromArgb(238, 228, 218);
-            tileColors[4] = Color.FromArgb(237, 224, 200);
-            tileColors[8] = Color.FromArgb(242, 177, 121);
-            tileColors[16] = Color.FromArgb(245, 149, 99);
-            tileColors[32] = Color.FromArgb(246, 124, 95);
-            tileColors[64] = Color.FromArgb(246, 94, 59);
-            tileColors[128] = Color.FromArgb(237, 207, 114);
-            tileColors[256] = Color.FromArgb(237, 204, 97);
-            tileColors[512] = Color.FromArgb(237, 200, 80);
-            tileColors[1024] = Color.FromArgb(237, 197, 63);
-            tileColors[2048] = Color.FromArgb(237, 194, 46);
+            tileColors = new Dictionary<int, Color>
+            {
+                { 0, Color.FromArgb(204, 192, 179) },
+                { 2, Color.FromArgb(238, 228, 218) },
+                { 4, Color.FromArgb(237, 224, 200) },
+                { 8, Color.FromArgb(242, 177, 121) },
+                { 16, Color.FromArgb(245, 149, 99) },
+                { 32, Color.FromArgb(246, 124, 95) },
+                { 64, Color.FromArgb(246, 94, 59) },
+                { 128, Color.FromArgb(237, 207, 114) },
+                { 256, Color.FromArgb(237, 204, 97) },
+                { 512, Color.FromArgb(237, 200, 80) },
+                { 1024, Color.FromArgb(237, 197, 63) },
+                { 2048, Color.FromArgb(237, 194, 46) }
+            };
 
-            validKeys = new Dictionary<Keys, string>();
-            validKeys[Keys.Up] = "top";
-            validKeys[Keys.Down] = "bottom";
-            validKeys[Keys.Left] = "left";
-            validKeys[Keys.Right] = "right";
-        }
+            validKeys = new Dictionary<Keys, string>
+            {
+                { Keys.Up, "top" },
+                { Keys.Down, "bottom" },
+                { Keys.Left,"left" },
+                { Keys.Right, "right" }
+            };
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
             game = new Game();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (game.isLost || game.isWon)
-            {
-                return base.ProcessCmdKey(ref msg, keyData);
-            }
-
-            if (validKeys.ContainsKey(keyData))
+            if (!(game.IsLost || game.IsWon) && validKeys.ContainsKey(keyData))
             {
                 game.handleMove(validKeys[keyData]);
 
-                if (this.game.isWon)
+                if (game.IsWon)
                 {
                     MessageBox.Show(String.Format("You win.\nYour score is {0}.", game.getScore()), "Game over");
                 }
-                else if (this.game.isLost)
+                else if (game.IsLost)
                 {
                     MessageBox.Show("You lose.", "Game over");
                 }
@@ -78,57 +71,47 @@ namespace vp_2048
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Pen myBrush = new Pen(Color.Yellow);
-            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            Pen lines = new Pen(Color.Yellow);
+            SolidBrush numbersBrush = new SolidBrush(Color.Black);
 
-            // Set format of string.
             StringFormat drawFormat = new StringFormat();
             drawFormat.Alignment = StringAlignment.Center;
             drawFormat.LineAlignment = StringAlignment.Center;
 
-            formGraphics = this.CreateGraphics();
-
-            for (int i = 0; i < 4; i++)
+            formGraphics = CreateGraphics();
+            for (int i = 0; i < game.BoardSize; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < game.BoardSize; j++)
                 {
-                    int val = game.getTileValue(j, i);
-                    SolidBrush solidBrush = new SolidBrush(tileColors[val]);
-                    String drawString = game.getTileValue(j, i).ToString();
-                    Rectangle r = new Rectangle(10 + 101 * i, 10 + 101 * j, 100, 100);
+                    int val = game.getTileValue(i, j);
+                    SolidBrush colorsBrush = new SolidBrush(tileColors[val]);
+                    String drawString = game.getTileValue(i, j).ToString();
+                    Rectangle r = new Rectangle(10 + 111 * j, 10 + 111 * i, 110, 110);
 
-                    formGraphics.DrawRectangle(myBrush, r);
-                    formGraphics.FillRectangle(solidBrush, r);
+                    formGraphics.DrawRectangle(lines, r);
+                    formGraphics.FillRectangle(colorsBrush, r);
                     if (val != 0)
                     {
-                        formGraphics.DrawString(drawString, drawFont, drawBrush, r, drawFormat);
+                        formGraphics.DrawString(drawString, drawFont, numbersBrush, r, drawFormat);
                     }
-                    solidBrush.Dispose();
+                    colorsBrush.Dispose();
                 }
             }
 
             label2.Text = "Score: " + game.getScore();
 
-            myBrush.Dispose();
+            lines.Dispose();
+            numbersBrush.Dispose();
             formGraphics.Dispose();
-            drawBrush.Dispose();
         }
-
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            rules.Show();
+        }
         private void button2_Click_1(object sender, EventArgs e)
         {
             game = new Game();
             Invalidate(true);
         }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            rules.Show();
-        }
-
-        private void label2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
     }
 }

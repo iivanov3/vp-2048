@@ -1,8 +1,4 @@
-﻿ using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace vp_2048
 {
@@ -10,74 +6,65 @@ namespace vp_2048
     {
         public int[,] Board { get; set; }
         public int BoardSize { get; set; }
-        public bool isWon { get; private set; }
-        public bool isLost { get;private set; }
+        public bool IsWon { get; set; }
+        public bool IsLost { get; set; }
         public int Score { get; set; }
-        public static Random RandomGenerator = new Random();
+        public static Random random = new Random();
 
         private int generateRandomNumber(int scale)
         {
-            return RandomGenerator.Next(0, scale);
+            return random.Next(0, scale);
         }
 
         public Game()
         {
-            this.Score = 0;
-            this.BoardSize = 4; 
-            this.isWon = false;
-            this.isLost = false;
-            this.Board = new int[4,4];
-            for(int i=0;i<this.BoardSize;i++)
+            Score = 0;
+            BoardSize = 4; 
+            IsWon = false;
+            IsLost = false;
+            Board = new int[4,4];
+
+            int randomCoordsX1 = generateRandomNumber(BoardSize);
+            int randomCoordsY1 = generateRandomNumber(BoardSize);
+            int randomCoordsX2 = generateRandomNumber(BoardSize);
+            int randomCoordsY2 = generateRandomNumber(BoardSize);
+
+            while(randomCoordsX1 == randomCoordsX2 && randomCoordsY1 == randomCoordsY2)
             {
-                for(int j=0; j < this.BoardSize;j++)
-                {
-                    this.Board[i,j] = 0;
-                }
+                randomCoordsX2 = generateRandomNumber(BoardSize);
+                randomCoordsY2 = generateRandomNumber(BoardSize);
             }
 
-            int randomCoordsX1, randomCoordsY1, randomCoordsX2, randomCoordsY2;
-            randomCoordsX1 = generateRandomNumber(this.BoardSize);
-            randomCoordsY1 = generateRandomNumber(this.BoardSize);
-            randomCoordsX2 = generateRandomNumber(this.BoardSize);
-            randomCoordsY2 = generateRandomNumber(this.BoardSize);
-            while(randomCoordsX1 == randomCoordsX2 && randomCoordsY1 == randomCoordsY2) // ne mozheme 2 bloka vo 1 pole
-            {
-                randomCoordsX2 = generateRandomNumber(this.BoardSize);
-                randomCoordsY2 = generateRandomNumber(this.BoardSize);
-            }
             int firstBlockValue, secondBlockValue;
             int initialBlockProbability = generateRandomNumber(100);
-            /*
-             * Imame 20% blokot da bide 4ka i 80% da bide 2ka,
-             * od nezavisnost na izborot na dvata bloka imame
-             * 64% dvata bloka da se 2ka, 16% prviot da e 2ka vtoriot 4ka 16% prviot da e 4ka vtoriot 2ka i 4% dvata bloka da se 4ka
-             */
+
             if (initialBlockProbability < 64)
             {
                 firstBlockValue = 2;
                 secondBlockValue = 2;
             }
-            else if(initialBlockProbability < 80)
+            else if (initialBlockProbability < 80)
             {
                 firstBlockValue = 2;
                 secondBlockValue = 4;
             }
-            else if(initialBlockProbability <96)
+            else if (initialBlockProbability < 96)
             {
                 firstBlockValue = 4;
                 secondBlockValue = 2;
-            }else
+            }
+            else
             {
                 firstBlockValue = 4;
                 secondBlockValue = 4;
             }
 
-            this.Board[randomCoordsX1,randomCoordsY1] = firstBlockValue;
-            this.Board[randomCoordsX2,randomCoordsY2] = secondBlockValue;
+            Board[randomCoordsX1, randomCoordsY1] = firstBlockValue;
+            Board[randomCoordsX2, randomCoordsY2] = secondBlockValue;
         }
-        private int[] shiftRight(int[] row) // zemi 1 red i podmesti mu gi decata udesno
+        private int[] shiftRight(int[] row)
         {
-            for(int i=this.BoardSize-1; i>0;i--)
+            for (int i = BoardSize - 1; i > 0; i--)
             {
                 if (row[i] == 0)
                 {
@@ -89,22 +76,22 @@ namespace vp_2048
                     i++;
                     continue;
                 }
-                for(int j=i-1;j>=0;j--)
+                for (int j = i - 1; j >= 0; j--)
                 {
                     if (row[j] == 0)
                         continue;
                     if (row[j] == row[i])
                     {
                         row[i] *= 2;
-                        this.Score += row[i];
+                        Score += row[i];
                         row[j] = 0;
                         break;
                     }
                     if (row[j] != row[i])
                     {
                         row[i - 1] = row[j];
-                        if(i-1 != j)
-                        row[j] = 0;
+                        if (i - 1 != j)
+                            row[j] = 0;
                         break;
                     }
 
@@ -114,78 +101,75 @@ namespace vp_2048
         }
         private void rotateTable()
         {
-            int[,] tempBoard = new int[this.BoardSize,this.BoardSize];
-            for (int i = 0; i < this.BoardSize; i++)
+            int[,] tempBoard = new int[BoardSize, BoardSize];
+            for (int i = 0; i < BoardSize; i++)
             {
-                for (int j = 0; j < this.BoardSize; j++)
+                for (int j = 0; j < BoardSize; j++)
                 {
-                    tempBoard[i,j] = this.Board[this.BoardSize-1-j,i];
+                    tempBoard[i, j] = Board[BoardSize - 1 - j, i];
                 }
             }
-            this.Board = tempBoard;
+            Board = tempBoard;
         }
-        public int [,] getTable()
-        {
-            return this.Board;
-        }
+
         public int getTileValue(int x, int y)
         {
-            return this.Board[x, y];
+            return Board[x, y];
         }
         public string getScore()
         {
-            return this.Score.ToString();
+            return Score.ToString();
         }
         private void addRandomTile()
         {
             int tileValue = generateRandomNumber(100) > 80 ? 4 : 2;
-            int ranCoordsX, ranCoordsY;
-            ranCoordsX = generateRandomNumber(this.BoardSize);
-            ranCoordsY = generateRandomNumber(this.BoardSize);
-            while(this.Board[ranCoordsX,ranCoordsY] != 0)
+            int ranCoordsX = generateRandomNumber(BoardSize);
+            int ranCoordsY = generateRandomNumber(BoardSize);
+
+            while (Board[ranCoordsX, ranCoordsY] != 0)
             {
-                ranCoordsX = generateRandomNumber(this.BoardSize);
-                ranCoordsY = generateRandomNumber(this.BoardSize);
+                ranCoordsX = generateRandomNumber(BoardSize);
+                ranCoordsY = generateRandomNumber(BoardSize);
             }
 
-            this.Board[ranCoordsX, ranCoordsY] = tileValue;
+            Board[ranCoordsX, ranCoordsY] = tileValue;
         }
         private void checkWon()
         {
-            for(int i=0;i<this.BoardSize;i++)
+            for (int i = 0; i < BoardSize; i++)
             {
-                for(int j=0;j<this.BoardSize;j++)
+                for (int j = 0; j < BoardSize; j++)
                 {
-                    if (this.Board[i, j] == 2048)
-                        this.isWon = true;
+                    if (Board[i, j] == 2048)
+                        IsWon = true;
                 }
             }
         }
         private bool isValid(int x, int y)
         {
-            if (x >= 0 && x < this.BoardSize && y >= 0 && y < this.BoardSize)
+            if (x >= 0 && x < BoardSize && y >= 0 && y < BoardSize)
                 return true;
-
             return false;
         }
         private bool sameNeighbor(int x, int y)
         {
             bool result = false;
+
             if (isValid(x - 1, y))
             {
-                result = result || this.Board[x - 1,y] == this.Board[x,y];
+                result = result || Board[x - 1, y] == Board[x, y];
             }
             if (isValid(x + 1, y))
             {
-                result = result || this.Board[x + 1, y] == this.Board[x, y];
+                result = result || Board[x + 1, y] == Board[x, y];
             }
             if (isValid(x, y - 1))
             {
-                result = result || this.Board[x, y - 1] == this.Board[x, y];
+                result = result || Board[x, y - 1] == Board[x, y];
             }
             if (isValid(x, y + 1))
             {
-                result = result || this.Board[x, y + 1] == this.Board[x, y];
+                result = result || Board[x, y + 1] == Board[x, y];
             }
 
             return result;
@@ -193,81 +177,91 @@ namespace vp_2048
         private void checkLost()
         {
             int count = 0;
-            for (int i = 0; i < this.BoardSize; i++)
+            for (int i = 0; i < BoardSize; i++)
             {
-                for (int j = 0; j < this.BoardSize; j++)
+                for (int j = 0; j < BoardSize; j++)
                 {
-                    if (this.Board[i, j] != 0)
-                        count += 1;
+                    if (Board[i, j] != 0)
+                    {
+                        count++;
+                    }
                 }
             }
-            if (count == this.BoardSize*this.BoardSize)
+
+            if (count == BoardSize * BoardSize)
             {
-                this.isLost = true;
-                for (int i = 0; i < this.BoardSize; i++)
+                IsLost = true;
+                for (int i = 0; i < BoardSize; i++)
                 {
-                    for (int j = 0; j < this.BoardSize; j++)
+                    for (int j = 0; j < BoardSize; j++)
                     {
-                        if (sameNeighbor(i, j) == true)
-                            this.isLost = false;
+                        if (sameNeighbor(i, j))
+                        {
+                            IsLost = false;
+                        }
                     }
                 }
             }
         }
-        public void handleMove(string direction) // right, left, bottom, top
+        public void handleMove(string direction)
         {
-            if(direction == "top")
+            if (direction == "top")
             {
-                this.rotateTable();
+                rotateTable();
             }
-            if(direction == "left")
+            else if (direction == "left")
             {
-                this.rotateTable();
-                this.rotateTable();
+                rotateTable();
+                rotateTable();
             }
-            if(direction=="bottom")
+            else if (direction == "bottom")
             {
-                this.rotateTable();
-                this.rotateTable();
-                this.rotateTable();
+                rotateTable();
+                rotateTable();
+                rotateTable();
             }
+
             bool isValidMove = false;
-            for (int i = 0; i < this.BoardSize; i++)
+            for (int i = 0; i < BoardSize; i++)
             {
-                int[] temp = new int[this.BoardSize];
-                for (int j = 0; j < this.BoardSize; j++)
+                int[] temp = new int[BoardSize];
+                for (int j = 0; j < BoardSize; j++)
                 {
-                    temp[j] = this.Board[i, j];
+                    temp[j] = Board[i, j];
                 }
+
                 temp = shiftRight(temp);
-                for (int j = 0; j < this.BoardSize; j++)
+                for (int j = 0; j < BoardSize; j++)
                 {
-                    if (this.Board[i, j] != temp[j]) isValidMove = true;
-                    this.Board[i, j] = temp[j];
+                    if (Board[i, j] != temp[j])
+                    {
+                        isValidMove = true;
+                    }
+                    Board[i, j] = temp[j];
                 }
             }
 
             if (direction == "bottom")
             {
-                this.rotateTable();
+                rotateTable();
             }
-            if (direction == "left")
+            else if (direction == "left")
             {
-                this.rotateTable();
-                this.rotateTable();
+                rotateTable();
+                rotateTable();
             }
-            if (direction == "top")
+            else if (direction == "top")
             {
-                this.rotateTable();
-                this.rotateTable();
-                this.rotateTable();
+                rotateTable();
+                rotateTable();
+                rotateTable();
             }
-            //TODO: check if lost, add new random block every move, then check if won
+
             if (isValidMove)
             {
-                this.addRandomTile();
-                this.checkWon();
-                this.checkLost();
+                addRandomTile();
+                checkWon();
+                checkLost();
             }
         }
     }
