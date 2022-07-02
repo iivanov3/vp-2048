@@ -9,7 +9,7 @@ namespace vp_2048
     {
         private Game game;
         private Graphics formGraphics;
-        private readonly Rules rules;
+        private Rules rules;
         private readonly Font drawFont;
         private readonly Dictionary<int, Color> tileColors;
         private readonly Dictionary<Keys, string> validKeys;
@@ -19,7 +19,7 @@ namespace vp_2048
             InitializeComponent();
             Text = "2048";
             DoubleBuffered = true;
-            rules = new Rules();
+
             label2.Font = new Font("Segoe UI", 14, FontStyle.Bold);
             drawFont = new Font("Arial", 25);
 
@@ -71,7 +71,7 @@ namespace vp_2048
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Pen lines = new Pen(Color.Yellow);
+            Pen lines = new Pen(Color.Gray, 8);
             SolidBrush numbersBrush = new SolidBrush(Color.Black);
 
             StringFormat drawFormat = new StringFormat();
@@ -86,7 +86,7 @@ namespace vp_2048
                     int val = game.getTileValue(i, j);
                     SolidBrush colorsBrush = new SolidBrush(tileColors[val]);
                     String drawString = game.getTileValue(i, j).ToString();
-                    Rectangle r = new Rectangle(10 + 111 * j, 10 + 111 * i, 110, 110);
+                    Rectangle r = new Rectangle(20 + 110 * j, 20 + 110 * i, 106, 106);
 
                     formGraphics.DrawRectangle(lines, r);
                     formGraphics.FillRectangle(colorsBrush, r);
@@ -106,6 +106,7 @@ namespace vp_2048
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
+            rules = new Rules();
             rules.Show();
         }
         private void button2_Click_1(object sender, EventArgs e)
